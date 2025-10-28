@@ -177,6 +177,8 @@ const SearchBar: React.FC<{
       placeholder: 'placeholder-slate-400',
       icon: 'text-slate-400',
       ring: 'focus:ring-cyan-500',
+      ringOffset: 'focus:ring-offset-slate-800',
+      clearIcon: 'text-slate-400 hover:text-white',
     },
     light: {
       bg: 'bg-white',
@@ -185,6 +187,8 @@ const SearchBar: React.FC<{
       placeholder: 'placeholder-slate-500',
       icon: 'text-slate-500',
       ring: 'focus:ring-blue-500',
+      ringOffset: 'focus:ring-offset-slate-100',
+      clearIcon: 'text-slate-500 hover:text-slate-900',
     },
     sepia: {
       bg: 'bg-amber-50',
@@ -193,6 +197,8 @@ const SearchBar: React.FC<{
       placeholder: 'placeholder-amber-600',
       icon: 'text-amber-600',
       ring: 'focus:ring-orange-600',
+      ringOffset: 'focus:ring-offset-amber-100',
+      clearIcon: 'text-amber-600 hover:text-amber-900',
     },
   };
   const classes = themeClasses[theme];
@@ -204,11 +210,22 @@ const SearchBar: React.FC<{
         </div>
         <input
           type="text"
-          placeholder="Search by number or title..."
+          placeholder="Search by number, title, or lyrics..."
           value={searchTerm}
           onChange={(e) => onSearchTermChange(e.target.value)}
-          className={`w-full rounded-full py-3 pl-10 pr-4 focus:outline-none focus:ring-2 border border-transparent ${classes.inputBg} ${classes.text} ${classes.placeholder} ${classes.ring}`}
+          className={`w-full rounded-full py-3 pl-10 pr-10 focus:outline-none focus:ring-2 border border-transparent ${classes.inputBg} ${classes.text} ${classes.placeholder} ${classes.ring}`}
         />
+        {searchTerm && (
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+            <button
+              onClick={() => onSearchTermChange('')}
+              className={`p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 ${classes.ring} ${classes.ringOffset}`}
+              aria-label="Clear search"
+            >
+              <CloseIcon className={`h-5 w-5 transition-colors ${classes.clearIcon}`} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -238,7 +255,8 @@ const App: React.FC = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     return ALL_HYMNS.filter(hymn =>
       hymn.title.toLowerCase().includes(lowercasedFilter) ||
-      hymn.id.toString().includes(lowercasedFilter)
+      hymn.id.toString().includes(lowercasedFilter) ||
+      hymn.lyrics.toLowerCase().includes(lowercasedFilter)
     );
   }, [searchTerm]);
 
